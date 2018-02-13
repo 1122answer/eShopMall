@@ -13,7 +13,15 @@ var userSchema = new Schema({
 		"checked":String,
 		"productNum":String
 	}],
-	"addressList":Array
-},{strict:false})
+	"addressList":[{
+		"addressId" : String,
+		"userName" : String,
+		"streetName" : String,
+		"postCode" : Number,
+		"tel" : Number,
+		"isDefault" : Boolean
+	}]
+})
 
-module.exports = mongoose.model("User",userSchema,"user")
+
+module.exports = mongoose.model("User",userSchema)

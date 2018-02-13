@@ -121,7 +121,7 @@
                 Item total: <span class="total-price">¥{{totalPrice}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">Checkout</a>
+                <a class="btn btn--red" :class="{'btn--dis':checkedCount == 0}" @click="checkOut">Checkout</a>
               </div>
             </div>
           </div>
@@ -189,8 +189,15 @@
           Model
         },
         computed:{
-          checkAllFlag(){
-            return this.checkedCount == this.cartList.length
+          checkAllFlag:{
+            //return this.checkedCount == this.cartList.length
+            get:function () {
+
+              return this.checkedCount == this.cartList.length
+            },
+            set:function (value) {  
+
+            }
           },
           checkedCount(){
             var i = 0;
@@ -219,7 +226,7 @@
           },
           delCartConfirm(productId){
              this.productId = productId;
-             console.log(this.productId)
+            
               this.modalConfirm = true;
           },
           delCart(){
@@ -236,16 +243,11 @@
           editCart(falg,item){
             if (falg == "add") {
               item.productNum++
-            }else if(falg == "minus"){
+            }else if(falg == "minu"){
               if (item.productNum <= 1) {return;}
               item.productNum--
             }else{
-              if (item.checked == "1") {
-                item.checked ="0";
-                
-              }else{
-                item.checked = "1"
-              }
+              item.checked =  item.checked == "1"?"0":"1";
               
             }
             axios.post("users/cartEdit",{
@@ -274,6 +276,13 @@
                 this.init();
                }
             })
+          },
+          checkOut(){
+            if (this.checkedCount>0) {
+              this.$router.push({
+                path:"/address"
+              })
+            }
           }
         }
     }
