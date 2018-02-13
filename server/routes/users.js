@@ -310,4 +310,65 @@ router.post("/delAddress", function (req , res, next) {
 		}
 	});
 })
+
+//生成点订购
+router.post("/payMent", function (req , res, next) {
+	var userId = req.cookies.userId,
+	 orderTotal = req.body.orderTotal,
+	 addressId = req.body.addressId
+	User.findOne({userId:userId},function(err,doc){
+		if (err) {
+			res.json({
+				status:"1",
+				msg:err.message,
+				result:""
+			})
+		}else{
+			var address = "";
+			//获取用户的地址信息
+		    doc.addressList.forEach((item)=>{
+		    	if(addressId == item.addressId){
+		    		address = item;
+		    	}
+		    })
+		    var goodsList =[];
+		    //获取用户购物车列表
+		    doc.cartList.filter((item)=>{
+		    	if (item.checked == "1") {
+		    		goodsList.push(item);
+		    	}
+		    });
+
+		    var order ={
+		    	orderId:"",
+		    	orderTotal:orderTotal,
+		    	addressInfo:address,
+		    	goodsList:goodsList,
+		    	orderStatus:"1",
+		    	createrDate:''
+		    };
+		    doc.orderList.push(order);
+		    doc.save(function (err1,doc1) {
+		    	if(err1){
+		    		res.json({
+		    			status:"1",
+		    			msg:err.message,
+		    			result:""
+		    		})
+		    	}else{
+		    		res.json({
+		    			status:"0",
+		    			msg:"删除成功",
+		    			result:{
+		    				orderId:order.orderId,
+		    				orederTotal:order.orderTotal
+		    			}
+		    		})	
+		    	}
+		    })
+
+
+		}
+	});
+})
 module.exports = router;
